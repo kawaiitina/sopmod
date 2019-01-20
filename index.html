@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>솦모챠</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="./src/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+    <div id="app" @mousedown="appMouseDown()" @mouseup="appMouseUp()">
+        <h2>{{ title }}</h2>
+        <table
+            @drag.prevent
+            @dragstart.prevent>
+            <tr v-for="(row, rowIndex) in board">
+                <td v-for="(cell, columnIndex) in row" class="cell">
+                    <div v-for="(value, subCellIndex) in cell" 
+                        class="sub-cell"
+                        :class="value ? 'sub-cell-on' : ''"
+                        @mousedown="subCellMouseDown(cell, subCellIndex, value)"
+                        @mouseover="subCellMouseOver(cell, subCellIndex)"
+                    />
+                </td>
+            </tr>
+        </table>
+        <button @click="toggleCells()">반전</button>
+        <button @click="resetCells()">초기화</button>
+        <button @click="load()">불러오기(아래 결과창으로부터)</button>
+        <hr>
+        <textarea rows="1" id="result" 
+            @click="selectAll($event)" 
+            @keydown.enter="load()"
+            v-model="result"/></textarea>
+        <footer>솦모챠 커여워</footer>
+    </div>
+	<script src="src/index.js"></script>
+</body>
+
+</html>
