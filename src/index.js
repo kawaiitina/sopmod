@@ -109,6 +109,10 @@ const app = new Vue({
                 this.board = newBoard;
             }
         },
+        copy(){
+            document.getElementById("result").select()
+            document.execCommand("copy");
+        },
         selectAll($event){
             $event.target.setSelectionRange(0, $event.target.value.length)
         }

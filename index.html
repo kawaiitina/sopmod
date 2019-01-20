@@ -21,7 +21,7 @@
                         :class="value ? 'sub-cell-on' : ''"
                         @mousedown="subCellMouseDown(cell, subCellIndex, value)"
                         @mouseover="subCellMouseOver(cell, subCellIndex)"
-                    />
+                    ></div>
                 </td>
             </tr>
         </table>
@@ -33,6 +33,7 @@
             @click="selectAll($event)" 
             @keydown.enter="load()"
             v-model="result"></textarea>
+        <button @click="copy()">복사</button>
         <footer>솦모챠 커여워</footer>
     </div>
 	<script src="src/index.js"></script>
