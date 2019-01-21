@@ -23,8 +23,12 @@
                         :class="value ? 'sub-cell-on' : ''"
                         @mousedown="subCellMouseDown(cell, subCellIndex, value)"
                         @mouseover="subCellMouseOver(cell, subCellIndex)"
+<<<<<<< HEAD
                         @touchstart="subCellMouseDown(cell, subCellIndex, value)"
                     ></div>
+=======
+                    />
+>>>>>>> parent of 19b39d5... 복사
                 </td>
             </tr>
         </table>
@@ -32,6 +36,7 @@
             @click="selectAll($event)" 
             @keydown.enter="load()"
             v-model="result"></textarea>
+<<<<<<< HEAD
         <button @click="copyToClipboard('result')">클립보드에 복사</button>
         <button @click="load()">불러오기</button>
         <button @click="invertBoard()">반전</button>
@@ -154,6 +159,8 @@
         </tbody>
     </table>
         <hr>
+=======
+>>>>>>> parent of 19b39d5... 복사
         <footer>솦모챠 커여워</footer>
     </div>
 	<script src="src/index.js"></script>
