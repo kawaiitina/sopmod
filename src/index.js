@@ -17,14 +17,29 @@ const BLOCK_ELEMENTS = [
     "█" // U+2588, FULL_BLOCK
 ]
 
-function Board(rows, columns){ // rows*columns인 matrix를 만들고, [false, false, false, false]으로 채움
-    return new Array(rows).fill(null).map(row =>
-        new Array(columns).fill(null).map(cell => [false, false, false, false])
-    )
+function multidimensionalArray(){
+    let result = [];
+    if(arguments.length === 1){
+        return new Array(arguments[0]).fill(null)
+    } else {
+        const args = Array.from(arguments);
+        args.shift()
+        return new Array(arguments[0]).fill(null).map(el => multidimensionalArray(...args));
+    }
+}
+
+function Board(rows, columns){ // rows*columns인 2차원 행렬을 만들고, [false, false, false, false]으로 채움
+    const arr = multidimensionalArray(ROW, COLUMN);
+    arr.forEach(row => {
+        row.forEach((cell, i) => {
+            row[i] = [false, false, false, false]
+        })
+    })
+    return arr
 }
 const ROW = 3;
 const COLUMN = 15;
-const MAX_LENGTH = 45;
+const BOARD_LENGTH = 45;
 
 const app = new Vue({
     el: "#app",
@@ -32,8 +47,12 @@ const app = new Vue({
         title: "ID카드에 소개를 써보자!",
         mousedown: false,
         mousedownOnCheckedCell: false,
-        board: Board(3, 15),
-        input: ""
+        ROW, 
+        COLUMN,
+        BOARD_LENGTH,
+        board: Board(ROW, COLUMN),
+        input: "",
+        data_board_text: multidimensionalArray(ROW, COLUMN)
     },
     computed: {
         result: {
@@ -55,6 +74,15 @@ const app = new Vue({
             set(input){
                 this.input = input;
             }
+        },
+        board_text: {
+            get(){
+                return this.data_board_text
+            },
+            set(input){
+                this.data_board_text = input;
+                console.log(input);
+            }
         }
     },
     methods:{
@@ -73,10 +101,12 @@ const app = new Vue({
                 cell.splice(subCellIndex, 1, !this.mousedownOnCheckedCell);
             }
         },
-        resetCells(){
-            this.board = Board(ROW, COLUMN)
+        resetBoard(){
+            if(window.confirm("초기화할까요?")){
+                this.board = Board(ROW, COLUMN);
+            }
         },
-        toggleCells(){
+        invertBoard(){
             for(let i = 0; i < ROW; i++){
                 for(let j = 0; j < COLUMN; j++){
                     for(let k = 0; k < 4; k++){
@@ -88,11 +118,11 @@ const app = new Vue({
         load(){
             if(this.input == "솦" || this.input == "솦모" || this.input == "솦모챠"){
                 this.title = "초진화! 크리스마스트리!";
-                this.input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▐▐▐　▌▌▐▚▞▝▄▘▌　▐　▐▝▄▘▙▞"
+                this.input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▚▜▐　▌▌▐▚▞▝▄▘▌　▐▝▐▝▄▘▙▞"
             }
             if(this.input){
                 const newBoard = Board(ROW, COLUMN)
-                for(let i = 0; i < MAX_LENGTH; i++){
+                for(let i = 0; i < BOARD_LENGTH; i++){
                     const idx = BLOCK_ELEMENTS.findIndex(el => el === this.input.charAt(i));
                     if(idx != -1){
                         const bin = idx.toString(2);
@@ -109,12 +139,38 @@ const app = new Vue({
                 this.board = newBoard;
             }
         },
-        copy(){
-            document.getElementById("result").select()
+        copyToClipboard(id){
+            document.getElementById(id).select()
             document.execCommand("copy");
         },
         selectAll($event){
             $event.target.setSelectionRange(0, $event.target.value.length)
+        },
+        copyBoard(){
+            if(window.confirm("복사합니다.")){
+                const board_text = multidimensionalArray(ROW, COLUMN)
+                const {result} = this;
+                for(let i = 0; i < ROW; i++){
+                    for(let j = 0; j < COLUMN; j++){
+                        board_text[i][j] = result.substr(i * COLUMN).charAt(j)
+                    }
+                }
+                this.board_text = board_text;
+            }
+        },
+        copyBoardTextToClipboard(){
+            const {board_text} = this;
+            let str = "";
+            for(let i = 0; i < ROW; i++){
+                for(let j = 0; j < COLUMN; j++){
+                    str += board_text[i][j];
+                }
+            }
+            const tempElem = document.getElementById("result-diy");
+            tempElem.value = str;
+            tempElem.select();
+            document.execCommand("copy");
+            return str;
         }
     }
 })
