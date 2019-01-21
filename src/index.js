@@ -107,6 +107,9 @@ const app = new Vue({
         },
         resizeBoard(){
             const {row_input, column_input} = this;
+            if(!window.confirm("크기를 변경하면 작업 내용이 지워집니다.")){
+                return;
+            }
             this.row = Number(row_input);
             this.column = Number(column_input);
             this.board = Board(Number(row_input), Number(column_input));
