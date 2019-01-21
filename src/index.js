@@ -139,13 +139,10 @@ const app = new Vue({
                 this.board = newBoard;
             }
         },
-<<<<<<< HEAD
         copyToClipboard(id){
             document.getElementById(id).select()
             document.execCommand("copy");
         },
-=======
->>>>>>> parent of 19b39d5... 복사
         selectAll($event){
             $event.target.setSelectionRange(0, $event.target.value.length)
         },
