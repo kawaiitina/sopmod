@@ -1,5 +1,5 @@
 #app{
-    min-width: 1200px;
+    width: 1024px;
 }
 .board{
     margin: 8px;
@@ -25,24 +25,27 @@
 .result{
     /* border: 2px solid #eeeeee; */
 }
+.edit-yourself{
+    border-spacing: 0;
+}
 .edit-yourself tr td{
-    position: relative;
     width: 32px;
     height: 32px;
+    padding: 0;
 }
 .cell-edit{
-    display: inline-block;
     resize: none;
     overflow: hidden;
-    width: 30px;
-    height: 30px;
-    padding: 1px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
     border: 0;
-    margin: 0;
+    margin: 2px 0;
+    outline: 1px solid rgba(255, 255, 255, 0.3);
     background-color: grey;
-    font-size: 28px;
+    font-size: 32px;
     color: white;
     font-family: sans-serif;
     vertical-align: top;
-    line-height: 1;
+    line-height: 0.7;
 }

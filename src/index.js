@@ -119,6 +119,9 @@ const app = new Vue({
             if(this.input == "솦" || this.input == "솦모" || this.input == "솦모챠"){
                 this.title = "초진화! 크리스마스트리!";
                 this.input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▚▜▐　▌▌▐▚▞▝▄▘▌　▐▝▐▝▄▘▙▞"
+            } else if (this.input == "ㅁㄷㄷ"){
+                this.title = "ㅁㄷㄷ";
+                this.input = "　▐▀▀▌　▛▀▀　▐▀▀▘　　▐　　▌　▌　　　▐　　　　　▐▄▄▌　▙▄▄　▐▄▄▖　";
             }
             if(this.input){
                 const newBoard = Board(ROW, COLUMN)
