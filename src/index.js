@@ -16,7 +16,7 @@ const BLOCK_ELEMENTS = [
     "▛", // U+259B, QUADRANT_UPPER_LEFT_AND_UPPER_RIGHT_AND_LOWER_LEFT
     "█" // U+2588, FULL_BLOCK
 ]
-
+const LINE_BREAK = "\n";
 function multidimensionalArray(){
     let result = [];
     if(arguments.length === 1){
@@ -29,7 +29,7 @@ function multidimensionalArray(){
 }
 
 function Board(rows, columns){ // rows*columns인 2차원 행렬을 만들고, [false, false, false, false]으로 채움
-    const arr = multidimensionalArray(ROW, COLUMN);
+    const arr = multidimensionalArray(rows, columns);
     arr.forEach(row => {
         row.forEach((cell, i) => {
             row[i] = [false, false, false, false]
@@ -47,19 +47,22 @@ const app = new Vue({
         title: "ID카드에 소개를 써보자!",
         mousedown: false,
         mousedownOnCheckedCell: false,
-        ROW, 
-        COLUMN,
-        BOARD_LENGTH,
-        board: Board(ROW, COLUMN),
+        row: 3,
+        column: 15,
+        row_input: 3, 
+        column_input: 15,
+        includeLineBreak: false,
+        boardLength: 45,
+        board: Board(3, 15),
         input: "",
-        data_board_text: multidimensionalArray(ROW, COLUMN)
+        board_text: multidimensionalArray(3, 15)
     },
     computed: {
         result: {
             get(){
                 let str = ""
-                for(let i = 0; i < ROW; i++){
-                    for(let j = 0; j < COLUMN; j++){
+                for(let i = 0; i < this.row; i++){
+                    for(let j = 0; j < this.column; j++){
                         const cell = this.board[i][j];
                         str += BLOCK_ELEMENTS[
                             cell[0] * 8 +
@@ -68,20 +71,14 @@ const app = new Vue({
                             cell[3]
                         ]
                     }
+                    if(this.includeLineBreak){
+                        str += LINE_BREAK;
+                    }
                 }
                 return str;
             },
             set(input){
                 this.input = input;
-            }
-        },
-        board_text: {
-            get(){
-                return this.data_board_text
-            },
-            set(input){
-                this.data_board_text = input;
-                console.log(input);
             }
         }
     },
@@ -102,36 +99,48 @@ const app = new Vue({
             }
         },
         resetBoard(){
+            const {row, column} = this;
             if(window.confirm("초기화할까요?")){
-                this.board = Board(ROW, COLUMN);
+                console.log(row, column);
+                this.board = Board(row, column);
             }
         },
+        resizeBoard(){
+            const {row_input, column_input} = this;
+            this.row = Number(row_input);
+            this.column = Number(column_input);
+            this.board = Board(Number(row_input), Number(column_input));
+        },
         invertBoard(){
-            for(let i = 0; i < ROW; i++){
-                for(let j = 0; j < COLUMN; j++){
+            const {row, column, board} = this;
+            for(let i = 0; i < row; i++){
+                for(let j = 0; j < column; j++){
                     for(let k = 0; k < 4; k++){
-                        this.board[i][j].splice(k, 1, !this.board[i][j][k])
+                        this.board[i][j].splice(k, 1, !board[i][j][k])
                     }
                 }
             }
         },
         load(){
-            if(this.input == "솦" || this.input == "솦모" || this.input == "솦모챠"){
+            const {row, column} = this;
+            let { input } = this;
+            if(input == "솦" || input == "솦모" || input == "솦모챠"){
                 this.title = "초진화! 크리스마스트리!";
-                this.input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▚▜▐　▌▌▐▚▞▝▄▘▌　▐▝▐▝▄▘▙▞"
-            } else if (this.input == "ㅁㄷㄷ"){
+                this.input = input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▚▜▐　▌▌▐▚▞▝▄▘▌　▐▝▐▝▄▘▙▞"
+            } else if (input == "ㅁㄷㄷ"){
                 this.title = "ㅁㄷㄷ";
-                this.input = "　▐▀▀▌　▛▀▀　▐▀▀▘　　▐　　▌　▌　　　▐　　　　　▐▄▄▌　▙▄▄　▐▄▄▖　";
+                this.input = input = "　▐▀▀▌　▛▀▀　▐▀▀▘　　▐　　▌　▌　　　▐　　　　　▐▄▄▌　▙▄▄　▐▄▄▖　";
             }
-            if(this.input){
-                const newBoard = Board(ROW, COLUMN)
-                for(let i = 0; i < BOARD_LENGTH; i++){
-                    const idx = BLOCK_ELEMENTS.findIndex(el => el === this.input.charAt(i));
+            if(input){
+                const newBoard = Board(row, column)
+                for(let i = 0; i < input.length; i++){
+                    const char = input.charAt(i);
+                    const idx = BLOCK_ELEMENTS.findIndex(el => el === char);
                     if(idx != -1){
                         const bin = idx.toString(2);
                         const paddedBin = "0000".substr(bin.length) + bin;
                         for(let j = 0; j < 4; j++){
-                            newBoard[Math.floor(i / COLUMN)][i % COLUMN][j] = !!Number(paddedBin.charAt(j))
+                            newBoard[Math.floor(i / column)][i % column][j] = !!Number(paddedBin.charAt(j))
                         }
 
                     } else {
@@ -150,23 +159,34 @@ const app = new Vue({
             $event.target.setSelectionRange(0, $event.target.value.length)
         },
         copyBoard(){
+            const {row, column} = this;
+            let {result} = this;
+            while(result.includes(LINE_BREAK)){
+                result = result.replace(LINE_BREAK, "");
+            }
             if(window.confirm("복사합니다.")){
-                const board_text = multidimensionalArray(ROW, COLUMN)
-                const {result} = this;
-                for(let i = 0; i < ROW; i++){
-                    for(let j = 0; j < COLUMN; j++){
-                        board_text[i][j] = result.substr(i * COLUMN).charAt(j)
+                const board_text = multidimensionalArray(row, column)
+                for(let i = 0; i < row; i++){
+                    for(let j = 0; j < column; j++){
+                        const char = result.substr(i * column).charAt(j);
+                        if(char === LINE_BREAK){
+                            continue;
+                        }
+                        board_text[i][j] = char
                     }
                 }
                 this.board_text = board_text;
             }
         },
         copyBoardTextToClipboard(){
-            const {board_text} = this;
+            const {board_text, row, column} = this;
             let str = "";
-            for(let i = 0; i < ROW; i++){
-                for(let j = 0; j < COLUMN; j++){
+            for(let i = 0; i < row; i++){
+                for(let j = 0; j < column; j++){
                     str += board_text[i][j];
+                }
+                if(this.includeLineBreak){
+                    str += LINE_BREAK;
                 }
             }
             const tempElem = document.getElementById("result-diy");
@@ -177,3 +197,5 @@ const app = new Vue({
         }
     }
 })
+
+window.onbeforeunload = function (e){return "ㅁㄷㄷ?"}

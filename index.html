@@ -153,7 +153,24 @@
             </td></tr>
         </tbody>
     </table>
+
         <hr>
+
+        <h3>크기 조절</h3>
+        <p>기본 설정(3행 15열, 줄바꿈 없음)에서 정상적으로 표시되지 않는 경우 3행 14열, 줄바꿈 포함으로 바꿔 보세요.</p>
+        <p>현재 설정: {{row}}행 {{column}}열, 줄바꿈 {{includeLineBreak ? "있음" : "없음"}}</p>
+        <form>
+            <label>행: </label><input type="number" v-model="row_input" placeholder="기본값: 3">
+            <label>열: </label><input type="number" v-model="column_input" placeholder="기본값: 15">
+            <label>줄바꿈 </label><input type="checkbox" v-model="includeLineBreak">
+            <button @click.prevent="resizeBoard()">크기 변경</button>
+            <p v-if="row_input > 3 || (column_input > 14 && includeLineBreak) || column_input > 15">
+                3행 15열 (줄바꿈을 포함하는 경우 14열)을 초과하면 정상적으로 표시되지 않을 수 있습니다.
+            </p>
+        </form>
+
+        <hr>
+
         <footer>이 페이지는 구글 크롬(PC)에 최적화되어 있습니다.</footer>
         <footer>솦모챠 커여워</footer>
     </div>

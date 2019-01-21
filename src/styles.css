@@ -1,5 +1,5 @@
 #app{
-    width: 1024px;
+    min-width: 1024px;
 }
 .board{
     margin: 8px;
@@ -11,6 +11,7 @@
     padding:0; 
     border:0; 
     margin:0;
+    min-width: 64px;
 }
 .sub-cell{
     width: 28px;
