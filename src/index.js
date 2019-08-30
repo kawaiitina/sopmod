@@ -125,6 +125,7 @@ const app = new Vue({
         copyToClipboard(id){
             document.getElementById(id).select()
             document.execCommand("copy");
+            window.alert("복사되었습니다.")
         },
         selectAll($event){
             $event.target.setSelectionRange(0, $event.target.value.length)
