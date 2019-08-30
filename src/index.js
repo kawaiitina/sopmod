@@ -64,10 +64,10 @@ const app = new Vue({
                     for(let j = 0; j < this.column; j++){
                         const cell = this.board[i][j];
                         str += BLOCK_ELEMENTS[
-                            cell[0] ? 8 : 0 +
-                            cell[1] ? 4 : 0 +
-                            cell[2] ? 2 : 0 +
-                            cell[3] ? 1 : 0
+                            (cell[0] ? 8 : 0) +
+                            (cell[1] ? 4 : 0) +
+                            (cell[2] ? 2 : 0) +
+                            (cell[3] ? 1 : 0)
                         ]
                     }
                     if(this.includeLineBreak){
