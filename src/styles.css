@@ -3,7 +3,12 @@
 }
 .board{
     margin: 8px;
-    outline: 2px solid #eeeeee
+    outline: 2px solid #eeeeee;
+    background-color: grey;
+    border-spacing: 0;
+}
+.board tr{
+    height: 68px;
 }
 .cell{
     width: 64px;
@@ -11,20 +16,18 @@
     padding:0; 
     border:0; 
     margin:0;
-    min-width: 64px;
 }
 .sub-cell{
-    width: 28px;
-    height: 28px;
-    margin: 2px;
-    display: inline-block;
-    background-color: #eeeeee;
+    width: 30px;
+    height: 30px;
+    padding:0; 
+    border:1px dotted white; 
+    margin:0;
+    background-color: grey;
+    float: left;
 }
 .sub-cell-on{
-    background-color: black;
-}
-.result{
-    /* border: 2px solid #eeeeee; */
+    background-color: white;
 }
 .edit-yourself{
     border-spacing: 0;

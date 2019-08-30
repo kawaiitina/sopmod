@@ -18,7 +18,6 @@ const BLOCK_ELEMENTS = [
 ]
 const LINE_BREAK = "\n";
 function multidimensionalArray(){
-    let result = [];
     if(arguments.length === 1){
         return new Array(arguments[0]).fill(null)
     } else {
@@ -38,24 +37,24 @@ function Board(rows, columns){ // rows*columns인 2차원 행렬을 만들고, [
     return arr
 }
 const ROW = 3;
-const COLUMN = 15;
+const COLUMN = 14;
 const BOARD_LENGTH = 45;
 
 const app = new Vue({
     el: "#app",
     data: {
-        title: "ID카드에 소개를 써보자!",
+        title: "ID카드에 자기 소개를 그려보자!",
         mousedown: false,
         mousedownOnCheckedCell: false,
         row: 3,
-        column: 15,
+        column: 14,
         row_input: 3, 
-        column_input: 15,
-        includeLineBreak: false,
+        column_input: 14,
+        includeLineBreak: true,
         boardLength: 45,
-        board: Board(3, 15),
+        board: Board(3, 14),
         input: "",
-        board_text: multidimensionalArray(3, 15)
+        board_text: multidimensionalArray(3, 14)
     },
     computed: {
         result: {
@@ -101,7 +100,6 @@ const app = new Vue({
         resetBoard(){
             const {row, column} = this;
             if(window.confirm("초기화할까요?")){
-                console.log(row, column);
                 this.board = Board(row, column);
             }
         },
@@ -122,36 +120,6 @@ const app = new Vue({
                         this.board[i][j].splice(k, 1, !board[i][j][k])
                     }
                 }
-            }
-        },
-        load(){
-            const {row, column} = this;
-            let { input } = this;
-            if(input == "솦" || input == "솦모" || input == "솦모챠"){
-                this.title = "초진화! 크리스마스트리!";
-                this.input = input = "▞▚▗▀▖▛▚▐▖▟▗▀▖▛▚▝▖▐　▌▛▘▐▚▜▐　▌▌▐▚▞▝▄▘▌　▐▝▐▝▄▘▙▞"
-            } else if (input == "ㅁㄷㄷ"){
-                this.title = "ㅁㄷㄷ";
-                this.input = input = "　▐▀▀▌　▛▀▀　▐▀▀▘　　▐　　▌　▌　　　▐　　　　　▐▄▄▌　▙▄▄　▐▄▄▖　";
-            }
-            if(input){
-                const newBoard = Board(row, column)
-                for(let i = 0; i < input.length; i++){
-                    const char = input.charAt(i);
-                    const idx = BLOCK_ELEMENTS.findIndex(el => el === char);
-                    if(idx != -1){
-                        const bin = idx.toString(2);
-                        const paddedBin = "0000".substr(bin.length) + bin;
-                        for(let j = 0; j < 4; j++){
-                            newBoard[Math.floor(i / column)][i % column][j] = !!Number(paddedBin.charAt(j))
-                        }
-
-                    } else {
-                        window.alert("잘못된 입력입니다.")
-                        return
-                    }
-                }
-                this.board = newBoard;
             }
         },
         copyToClipboard(id){
