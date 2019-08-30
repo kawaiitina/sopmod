@@ -1,4 +1,6 @@
 const BLOCK_ELEMENTS = [
+    // 8 4
+    // 2 1 이 순서로 오름차순 정렬됨
     "　", // U+3000, BLANK
     "▗", // U+2597, QUADRANT_LOWER_RIGHT
     "▖", // U+2596, QUADRANT_LOWER_LEFT
@@ -27,18 +29,27 @@ function multidimensionalArray(){
     }
 }
 
-function Board(rows, columns){ // rows*columns인 2차원 행렬을 만들고, [false, false, false, false]으로 채움
+function Board(rows, columns){
     const arr = multidimensionalArray(rows, columns);
     arr.forEach(row => {
         row.forEach((cell, i) => {
-            row[i] = [false, false, false, false]
+            // row[i] = {
+            //     topLeft: false,
+            //     topRight: false,
+            //     bottomLeft: false,
+            //     bottomRight: false
+            // }
+            row[i] = [false, false, false ,false]
         })
     })
     return arr
 }
-const ROW = 3;
-const COLUMN = 14;
-const BOARD_LENGTH = 45;
+
+const boardSample = [
+    [],
+    [],
+    []
+]
 
 const app = new Vue({
     el: "#app",
@@ -46,15 +57,14 @@ const app = new Vue({
         title: "ID카드에 자기 소개를 그려보자!",
         mousedown: false,
         mousedownOnCheckedCell: false,
+
         row: 3,
         column: 14,
+        board: Board(3, 14),
+
         row_input: 3, 
         column_input: 14,
-        includeLineBreak: true,
-        boardLength: 45,
-        board: Board(3, 14),
-        input: "",
-        board_text: multidimensionalArray(3, 14)
+        includeLineBreak: true
     },
     computed: {
         result: {
@@ -64,10 +74,10 @@ const app = new Vue({
                     for(let j = 0; j < this.column; j++){
                         const cell = this.board[i][j];
                         str += BLOCK_ELEMENTS[
-                            cell[0] * 8 +
-                            cell[1] * 4 +
-                            cell[2] * 2 +
-                            cell[3]
+                            cell[0] ? 8 : 0 +
+                            cell[1] ? 4 : 0 +
+                            cell[2] ? 2 : 0 +
+                            cell[3] ? 1 : 0
                         ]
                     }
                     if(this.includeLineBreak){
@@ -91,16 +101,19 @@ const app = new Vue({
         subCellMouseDown(cell, subCellIndex, value){
             this.mousedownOnCheckedCell = value
             cell.splice(subCellIndex, 1, !value);
+            this.drawPreview();
         },
         subCellMouseOver(cell, subCellIndex){
             if(this.mousedown){
                 cell.splice(subCellIndex, 1, !this.mousedownOnCheckedCell);
             }
+            this.drawPreview();
         },
         resetBoard(){
             const {row, column} = this;
             if(window.confirm("초기화할까요?")){
                 this.board = Board(row, column);
+                this.drawPreview();
             }
         },
         resizeBoard(){
@@ -111,6 +124,8 @@ const app = new Vue({
             this.row = Number(row_input);
             this.column = Number(column_input);
             this.board = Board(Number(row_input), Number(column_input));
+            document.getElementById("board").style.width = row * 64 + "px";
+            this.drawPreview();
         },
         invertBoard(){
             const {row, column, board} = this;
@@ -121,53 +136,70 @@ const app = new Vue({
                     }
                 }
             }
+            this.drawPreview();
         },
-        copyToClipboard(id){
-            document.getElementById(id).select()
+        copyBoardToClipboard(){
+            document.getElementById('result').select()
             document.execCommand("copy");
             window.alert("복사되었습니다.")
         },
         selectAll($event){
             $event.target.setSelectionRange(0, $event.target.value.length)
         },
-        copyBoard(){
-            const {row, column} = this;
-            let {result} = this;
-            while(result.includes(LINE_BREAK)){
-                result = result.replace(LINE_BREAK, "");
-            }
-            if(window.confirm("복사합니다.")){
-                const board_text = multidimensionalArray(row, column)
-                for(let i = 0; i < row; i++){
-                    for(let j = 0; j < column; j++){
-                        const char = result.substr(i * column).charAt(j);
-                        if(char === LINE_BREAK){
-                            continue;
-                        }
-                        board_text[i][j] = char
-                    }
-                }
-                this.board_text = board_text;
-            }
-        },
-        copyBoardTextToClipboard(){
-            const {board_text, row, column} = this;
-            let str = "";
+        drawPreview(){
+            const {row, column, board} = this;
+            const canvas = document.getElementById("preview");
+            const ctx = canvas.getContext("2d");
+            const cellWidth = 30;
+            const cellHeight = 30;
+            const subCellWidth = cellWidth / 2;
+            const subCellHeight = cellHeight / 2;
+            const rowDistance = 5;
+            const drawStartX = 160;
+            const drawStartY = 90;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "rgb(255, 255, 255)";
             for(let i = 0; i < row; i++){
                 for(let j = 0; j < column; j++){
-                    str += board_text[i][j];
-                }
-                if(this.includeLineBreak){
-                    str += LINE_BREAK;
+                    const cell = board[i][j];
+                    if(cell[0]){ // top left
+                        ctx.fillRect(
+                            drawStartX + j * cellWidth,
+                            drawStartY + i * (cellHeight + rowDistance), 
+                            subCellWidth,
+                            subCellHeight
+                        )
+                    }
+                    if(cell[1]){ // top right
+                        ctx.fillRect(
+                            drawStartX + j * cellWidth + subCellWidth,
+                            drawStartY + i * (cellHeight + rowDistance), 
+                            subCellWidth,
+                            subCellHeight
+                        )
+                    }
+                    if(cell[2]){ // bottom left
+                        ctx.fillRect(
+                            drawStartX + j * cellWidth,
+                            drawStartY + i * (cellHeight + rowDistance) + subCellHeight, 
+                            subCellWidth,
+                            subCellHeight
+                        )
+                    }
+                    if(cell[3]){ // bottom right
+                        ctx.fillRect(
+                            drawStartX + j * cellWidth + subCellWidth,
+                            drawStartY + i * (cellHeight + rowDistance) + subCellHeight, 
+                            subCellWidth,
+                            subCellHeight
+                        )
+                    }
                 }
             }
-            const tempElem = document.getElementById("result-diy");
-            tempElem.value = str;
-            tempElem.select();
-            document.execCommand("copy");
-            return str;
+
         }
     }
 })
-
-window.onbeforeunload = function (e){return "ㅁㄷㄷ?"}
+window.onbeforeunload = function (){return "솦"}

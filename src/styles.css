@@ -1,13 +1,10 @@
-#app{
-    min-width: 1024px;
-}
-.board{
-    margin: 8px;
+#board{
+    width: 896px;
     outline: 2px solid #eeeeee;
     background-color: grey;
     border-spacing: 0;
 }
-.board tr{
+#board tr{
     height: 68px;
 }
 .cell{
@@ -16,6 +13,7 @@
     padding:0; 
     border:0; 
     margin:0;
+    position: relative;
 }
 .sub-cell{
     width: 30px;
@@ -24,32 +22,32 @@
     border:1px dotted white; 
     margin:0;
     background-color: grey;
-    float: left;
+    position: absolute;
+}
+.sub-cell-0{
+    /* top left */
+    top: 0;
+    left: 0;
+}
+.sub-cell-1{
+    /* top right */
+    top: 0;
+    left: 32px;
+}
+.sub-cell-2{
+    /* bottom left */
+    top: 32px;
+    left: 0;
+}
+.sub-cell-3{
+    /* bottom right */
+    top: 32px;
+    left: 32px;
 }
 .sub-cell-on{
     background-color: white;
 }
-.edit-yourself{
-    border-spacing: 0;
-}
-.edit-yourself tr td{
-    width: 32px;
-    height: 32px;
-    padding: 0;
-}
-.cell-edit{
-    resize: none;
-    overflow: hidden;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 0;
-    margin: 2px 0;
-    outline: 1px solid rgba(255, 255, 255, 0.3);
-    background-color: grey;
-    font-size: 32px;
-    color: white;
-    font-family: sans-serif;
-    vertical-align: top;
-    line-height: 0.7;
+#preview{
+    background-image: url('./bg.png');
+    cursor: not-allowed;
 }

@@ -11,153 +11,47 @@
 <body>
     <div id="app" @mousedown="appMouseDown()" @mouseup="appMouseUp()">
         <h2>{{ title }}</h2>
-        <table
-            class="board"
-            @drag.prevent
-            @dragstart.prevent
-            @touchend.prevent>
-            <tr v-for="(row, rowIndex) in board" key="rowIndex">
-                <td v-for="(cell, columnIndex) in row" key="columnIndex" class="cell">
-                    <div v-for="(value, subCellIndex) in cell" key="subCellIndex"
-                        class="sub-cell"
-                        :class="value ? 'sub-cell-on' : ''"
-                        @mousedown="subCellMouseDown(cell, subCellIndex, value)"
-                        @mouseover="subCellMouseOver(cell, subCellIndex)"
-                        @touchstart="subCellMouseDown(cell, subCellIndex, value)"
-                    ></div>
-                </td>
-            </tr>
-        </table>
+        <hr>
         <div>
-            <h3>결과</h3>
-            <textarea rows="3" id="result" 
-                @click="selectAll($event)" 
-                v-model="result"></textarea>
+            <h3>여기에 그리세요</h3>
+            <table
+                id="board"
+                @drag.prevent
+                @dragstart.prevent
+                @touchend.prevent>
+                <tr v-for="(row, rowIndex) in board" key="rowIndex">
+                    <td v-for="(cell, columnIndex) in row" key="columnIndex" class="cell">
+                        <div v-for="(value, subCellIndex) in cell" key="subCellIndex"
+                            class="sub-cell"
+                            :class="('sub-cell-' + subCellIndex) + ' '
+                                  + (value ? 'sub-cell-on' : '')"
+                            @mousedown="subCellMouseDown(cell, subCellIndex, value)"
+                            @mouseover="subCellMouseOver(cell, subCellIndex)"
+                            @touchstart="subCellMouseDown(cell, subCellIndex, value)"
+                        ></div>
+                    </td>
+                </tr>
+            </table>
             <br>
-            <button @click="copyToClipboard('result')">클립보드에 복사</button>
             <button @click="invertBoard()">반전</button>
             <button @click="resetBoard()">초기화</button>
         </div>
-        
         <hr>
-
         <div>
-            <h3>직접 수정하기</h3>
-            <button @click="copyBoard()">위에 그린 것 가져오기</button>
-            <table class="edit-yourself">
-                <tr v-for="(row, i) in board_text" key="i">
-                    <td v-for="(cell, j) in row" key="j">
-                        <textarea 
-                            :value="cell"
-                            @change="board_text[i].splice(j, 1, $event.target.value)"
-                            rows="1" cols="1" 
-                            class="cell-edit"
-                            @click="selectAll($event)" 
-                            ></textarea>
-                    </td>
-                </tr>
-            </table>
-            <textarea rows="1" id="result-diy" style="width: 0px; height: 0px; border: 0; padding: 1px; resize: none;" readonly></textarea>
-            <button @click="copyBoardTextToClipboard()">클립보드에 복사</button>
-    
-            <p>아래 있는 문자들을 복사&붙여넣기로 직접 수정할 수 있습니다. 다른 문자는 너비가 맞지 않아 의도한 대로 표시되지 않을 수 있습니다.</p>
-        
-            <table>
-                <tbody>
-                    <tr style="background:#F8F8F8;font-size:small">
-                    <td style="width:45pt">&nbsp;</td>
-                    <td style="width:20pt">0</td>
-                    <td style="width:20pt">1</td>
-                    <td style="width:20pt">2</td>
-                    <td style="width:20pt">3</td>
-                    <td style="width:20pt">4</td>
-                    <td style="width:20pt">5</td>
-                    <td style="width:20pt">6</td>
-                    <td style="width:20pt">7</td>
-                    <td style="width:20pt">8</td>
-                    <td style="width:20pt">9</td>
-                    <td style="width:20pt">A</td>
-                    <td style="width:20pt">B</td>
-                    <td style="width:20pt">C</td>
-                    <td style="width:20pt">D</td>
-                    <td style="width:20pt">E</td>
-                    <td style="width:20pt">F
-                    </td></tr>
-                    <tr>
-                    <td style="background:#F8F8F8;font-size:small">U+258x
-                    </td>
-                    <td title="U+2580: UPPER HALF BLOCK">▀
-                    </td>
-                    <td title="U+2581: LOWER ONE EIGHTH BLOCK">▁
-                    </td>
-                    <td title="U+2582: LOWER ONE QUARTER BLOCK">▂
-                    </td>
-                    <td title="U+2583: LOWER THREE EIGHTHS BLOCK">▃
-                    </td>
-                    <td title="U+2584: LOWER HALF BLOCK">▄
-                    </td>
-                    <td title="U+2585: LOWER FIVE EIGHTHS BLOCK">▅
-                    </td>
-                    <td title="U+2586: LOWER THREE QUARTERS BLOCK">▆
-                    </td>
-                    <td title="U+2587: LOWER SEVEN EIGHTHS BLOCK">▇
-                    </td>
-                    <td title="U+2588: FULL BLOCK">█
-                    </td>
-                    <td title="U+2589: LEFT SEVEN EIGHTHS BLOCK">▉
-                    </td>
-                    <td title="U+258A: LEFT THREE QUARTERS BLOCK">▊
-                    </td>
-                    <td title="U+258B: LEFT FIVE EIGHTHS BLOCK">▋
-                    </td>
-                    <td title="U+258C: LEFT HALF BLOCK">▌
-                    </td>
-                    <td title="U+258D: LEFT THREE EIGHTHS BLOCK">▍
-                    </td>
-                    <td title="U+258E: LEFT ONE QUARTER BLOCK">▎
-                    </td>
-                    <td title="U+258F: LEFT ONE EIGHTH BLOCK">▏
-                    </td>
-                </tr>
-                    <tr>
-                    <td style="background:#F8F8F8;font-size:small">U+259x
-                    </td>
-                    <td title="U+2590: RIGHT HALF BLOCK">▐
-                    </td>
-                    <td title="U+2591: LIGHT SHADE">░
-                    </td>
-                    <td title="U+2592: MEDIUM SHADE">▒
-                    </td>
-                    <td title="U+2593: DARK SHADE">▓
-                    </td>
-                    <td title="U+2594: UPPER ONE EIGHTH BLOCK">▔
-                    </td>
-                    <td title="U+2595: RIGHT ONE EIGHTH BLOCK">▕
-                    </td>
-                    <td title="U+2596: QUADRANT LOWER LEFT">▖
-                    </td>
-                    <td title="U+2597: QUADRANT LOWER RIGHT">▗
-                    </td>
-                    <td title="U+2598: QUADRANT UPPER LEFT">▘
-                    </td>
-                    <td title="U+2599: QUADRANT UPPER LEFT AND LOWER LEFT AND LOWER RIGHT">▙
-                    </td>
-                    <td title="U+259A: QUADRANT UPPER LEFT AND LOWER RIGHT">▚
-                    </td>
-                    <td title="U+259B: QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER LEFT">▛
-                    </td>
-                    <td title="U+259C: QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER RIGHT">▜
-                    </td>
-                    <td title="U+259D: QUADRANT UPPER RIGHT">▝
-                    </td>
-                    <td title="U+259E: QUADRANT UPPER RIGHT AND LOWER LEFT">▞
-                    </td>
-                    <td title="U+259F: QUADRANT UPPER RIGHT AND LOWER LEFT AND LOWER RIGHT">▟
-                    </td></tr>
-                </tbody>
-            </table>
+            <h3>미리보기</h3>
+            <canvas id="preview" width="798" height="216"></canvas>
+            <p>위 이미지는 참고용입니다. 실제 적용되었을 때 다르게 보일 수 있습니다.</p>
         </div>
-
+        <hr>
+        <div>
+            <h3>결과(아래 내용을 복사해 ID카드에 붙여넣으세요)</h3>
+            <textarea id="result" 
+                rows="5" cols="50" 
+                @click="selectAll($event)" 
+                v-model="result"></textarea>
+            <br>
+            <button @click="copyBoardToClipboard()">클립보드에 복사</button>
+        </div>
         <hr>
         <div>
             <h3>크기 조절</h3>
@@ -173,11 +67,18 @@
                 </p>
             </form>
         </div>
-
         <hr>
-        <div>            
-            <h3>적용 예시</h3>
-            <img src="./src/example.png" alt="적용 예시">
+        <div>
+            <textarea placeholder="메모장1"></textarea>
+            <br>
+            <textarea placeholder="메모장2"></textarea>
+            <br>
+            <textarea placeholder="메모장3"></textarea>
+        </div>
+        <hr>
+        <div>
+            <h3>참고 링크</h3>
+            <a href="https://en.wikipedia.org/wiki/Block_Elements">https://en.wikipedia.org/wiki/Block_Elements</a>
         </div>
         <hr>
         <footer>이 페이지는 구글 크롬(PC)에 최적화되어 있습니다. 최종 수정 2019년 8월 30일. 솦모챠 커여워</footer>
