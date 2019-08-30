@@ -1,6 +1,6 @@
 const BLOCK_ELEMENTS = [
     // 8 4
-    // 2 1 이 순서로 오름차순 정렬됨
+    // 2 1
     "　", // U+3000, BLANK
     "▗", // U+2597, QUADRANT_LOWER_RIGHT
     "▖", // U+2596, QUADRANT_LOWER_LEFT
@@ -33,23 +33,13 @@ function Board(rows, columns){
     const arr = multidimensionalArray(rows, columns);
     arr.forEach(row => {
         row.forEach((cell, i) => {
-            // row[i] = {
-            //     topLeft: false,
-            //     topRight: false,
-            //     bottomLeft: false,
-            //     bottomRight: false
-            // }
+            // topLeft, topRight, bottomLeft, bottomRight 순서
             row[i] = [false, false, false ,false]
         })
     })
     return arr
 }
 
-const boardSample = [
-    [],
-    [],
-    []
-]
 
 const app = new Vue({
     el: "#app",
@@ -124,7 +114,6 @@ const app = new Vue({
             this.row = Number(row_input);
             this.column = Number(column_input);
             this.board = Board(Number(row_input), Number(column_input));
-            document.getElementById("board").style.width = row * 64 + "px";
             this.drawPreview();
         },
         invertBoard(){

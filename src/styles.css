@@ -1,5 +1,4 @@
 #board{
-    width: 896px;
     outline: 2px solid #eeeeee;
     background-color: grey;
     border-spacing: 0;
@@ -9,6 +8,7 @@
 }
 .cell{
     width: 64px;
+    min-width: 64px;
     height: 64px;
     padding:0; 
     border:0; 
