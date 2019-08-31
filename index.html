@@ -48,7 +48,8 @@
             <textarea id="result" 
                 rows="5" cols="50" 
                 @click="selectAll($event)" 
-                v-model="result"></textarea>
+                v-model="result"
+                readonly></textarea>
             <br>
             <button @click="copyBoardToClipboard()">클립보드에 복사</button>
         </div>
@@ -66,14 +67,6 @@
                     3행 14열을 초과하면 정상적으로 표시되지 않을 수 있습니다.
                 </p>
             </form>
-        </div>
-        <hr>
-        <div>
-            <textarea placeholder="메모장1"></textarea>
-            <br>
-            <textarea placeholder="메모장2"></textarea>
-            <br>
-            <textarea placeholder="메모장3"></textarea>
         </div>
         <hr>
         <div>
