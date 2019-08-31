@@ -47,6 +47,16 @@
 .sub-cell-on{
     background-color: white;
 }
+#result-table td{
+    border: 1px solid black;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    font-size: 32px;
+}
+#textarea-temp{
+    display: none;
+}
 #preview{
     background-image: url('./bg.png');
     cursor: not-allowed;

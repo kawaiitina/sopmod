@@ -54,30 +54,35 @@ const app = new Vue({
 
         row_input: 3, 
         column_input: 14,
-        includeLineBreak: true
+        includeLineBreak: true,
+
+        resultTable: multidimensionalArray(3, 14)
     },
     computed: {
         result: {
             get(){
                 let str = ""
+                const array = multidimensionalArray(this.row, this.column);
                 for(let i = 0; i < this.row; i++){
                     for(let j = 0; j < this.column; j++){
                         const cell = this.board[i][j];
-                        str += BLOCK_ELEMENTS[
+                        const blockElement = BLOCK_ELEMENTS[
                             (cell[0] ? 8 : 0) +
                             (cell[1] ? 4 : 0) +
                             (cell[2] ? 2 : 0) +
                             (cell[3] ? 1 : 0)
-                        ]
+                        ];
+                        str += blockElement
+                        array[i][j] = blockElement
                     }
                     if(this.includeLineBreak){
                         str += LINE_BREAK;
                     }
                 }
-                return str;
-            },
-            set(input){
-                this.input = input;
+                return {
+                    toString(){return str;},
+                    array
+                };
             }
         }
     },
@@ -187,7 +192,31 @@ const app = new Vue({
                     }
                 }
             }
-
+        },
+        copyToResultTable(){
+            if(window.confirm("불러올까요?")){
+                this.resultTable = this.result.array;
+            }
+        },
+        copyResultTableToClipBoard(){
+            const {row, column, includeLineBreak} = this;
+            let str = ""
+            const elems = document.getElementsByClassName("result-table-data");
+            for(let rowIndex = 0; rowIndex < row; rowIndex += 1){
+                for(let columnIndex = 0; columnIndex < column; columnIndex += 1){
+                    str += elems[rowIndex * column + columnIndex].innerHTML;
+                }
+                if(includeLineBreak){
+                    str += LINE_BREAK;
+                }
+            }
+            const $textarea_temp = document.getElementById("textarea-temp");
+            $textarea_temp.innerHTML = str;
+            $textarea_temp.style.display = "block";
+            $textarea_temp.select()
+            document.execCommand("copy");
+            $textarea_temp.style.display = "none";
+            window.alert("복사되었습니다.")
         }
     }
 })

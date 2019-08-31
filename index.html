@@ -48,10 +48,24 @@
             <textarea id="result" 
                 rows="5" cols="50" 
                 @click="selectAll($event)" 
-                v-model="result"
+                v-model="result.toString()"
                 readonly></textarea>
             <br>
             <button @click="copyBoardToClipboard()">클립보드에 복사</button>
+        </div>
+        <hr>
+        <div>
+            <h3>직접 수정하기</h3>
+            <table id="result-table">
+                <tr v-for="(row, rowIndex) in resultTable" key="rowIndex">
+                    <td v-for="(ch, columnIndex) in row" key="columnIndex" 
+                        class="result-table-data" 
+                        contenteditable>{{ ch }}</td>
+                </tr>
+            </table>
+            <textarea id="textarea-temp"></textarea>
+            <button type="button" @click="copyToResultTable()">결과 불러오기</button>
+            <button type="button" @click="copyResultTableToClipBoard()">클립보드에 복사</button>
         </div>
         <hr>
         <div>
@@ -74,7 +88,7 @@
             <a href="https://en.wikipedia.org/wiki/Block_Elements">https://en.wikipedia.org/wiki/Block_Elements</a>
         </div>
         <hr>
-        <footer>이 페이지는 구글 크롬(PC)에 최적화되어 있습니다. 최종 수정 2019년 8월 30일. 솦모챠 커여워</footer>
+        <footer>이 페이지는 구글 크롬(PC)에 최적화되어 있습니다. 최종 수정 2019년 8월 31일. 솦모챠 커여워</footer>
     </div>
 	<script src="src/index.js"></script>
 </body>
